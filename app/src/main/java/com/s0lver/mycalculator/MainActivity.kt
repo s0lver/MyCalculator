@@ -104,61 +104,88 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // 0 means you are in number state
-                    // 1 means you are in operator state
-                    var currentStatus by remember { mutableStateOf(0) }
-                    var currentNumber by remember { mutableStateOf("0") }
+                    var numberOnScreen by remember { mutableStateOf("0") }
+                    var currentState by remember { mutableStateOf(CalculatorState.NUMBER) }
+                    var currentOperator: CalculatorOperator? by remember { mutableStateOf(null) }
+
+                    var currentNumber: Double = 0.0
+
 
                     Text("Calculator v2")
-                    Text(currentNumber)
+                    Text(numberOnScreen)
 
 
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "7")
+                            numberOnScreen = appendNumber(numberOnScreen, "7")
                         }) { Text("7") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "8")
+                            numberOnScreen = appendNumber(numberOnScreen, "8")
                         }) { Text("8") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "9")
+                            numberOnScreen = appendNumber(numberOnScreen, "9")
                         }) { Text("9") }
-                        Button(onClick = {}) { Text("+") }
+                        Button(onClick = {
+                            currentOperator = CalculatorOperator.PLUS
+                            currentState = CalculatorState.OPERATOR
+
+                            if (numberOnScreen.isNotEmpty() && numberOnScreen.last() != '.') {
+                                currentNumber = numberOnScreen.toDouble()
+                                numberOnScreen = ""
+                            }
+                        }) { Text("+") }
                     }
 
                     Row {
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "4")
+                            numberOnScreen = appendNumber(numberOnScreen, "4")
                         }) { Text("4") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "5")
+                            numberOnScreen = appendNumber(numberOnScreen, "5")
                         }) { Text("5") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "6")
+                            numberOnScreen = appendNumber(numberOnScreen, "6")
                         }) { Text("6") }
-                        Button(onClick = {}) { Text("-") }
+                        Button(onClick = {
+                            currentOperator = CalculatorOperator.MINUS
+                            currentState = CalculatorState.OPERATOR
+                        }) { Text("-") }
                     }
 
                     Row {
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "1")
+                            numberOnScreen = appendNumber(numberOnScreen, "1")
                         }) { Text("1") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "2")
+                            numberOnScreen = appendNumber(numberOnScreen, "2")
                         }) { Text("2") }
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "3")
+                            numberOnScreen = appendNumber(numberOnScreen, "3")
                         }) { Text("3") }
-                        Button(onClick = {}) { Text("*") }
+                        Button(onClick = {
+                            currentOperator = CalculatorOperator.MULTIPLY
+                            currentState = CalculatorState.OPERATOR
+                        }) { Text("*") }
                     }
 
                     Row {
                         Button(onClick = {
-                            currentNumber = appendNumber(currentNumber, "0")
+                            numberOnScreen = appendNumber(numberOnScreen, "0")
                         }) { Text("0") }
-                        Button(onClick = {}) { Text(".") }
+                        Button(onClick = {
+                            if (!numberOnScreen.contains(".")) {
+                                numberOnScreen += "."
+                            }
+                        }) { Text(".") }
                         Button(onClick = {}) { Text("=") }
-                        Button(onClick = {}) { Text("/") }
+                        Button(onClick = {
+                            currentOperator = CalculatorOperator.DIVIDE
+                            currentState = CalculatorState.OPERATOR
+                        }) { Text("/") }
+                    }
+
+                    Row {
+                        Text("Current operator $currentOperator")
                     }
                 }
             }
